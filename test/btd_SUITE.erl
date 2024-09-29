@@ -40,14 +40,18 @@ btd_insert_test(_Config) ->
     ).
 
 btd_remove(Config) ->
-    {badmatch, Tree} = lists:keyfind(tree, 1, Config).
-    % T1 = lab2:remove(3, Tree),
-    % ?assertEqual(
-    %     {node, 10, 10,
-    %         {node, 5, 5,
-    %             {node, 2, 2, {node, 1, 1, {node, "nil"}, {node, "nil"}},
-    %                 {node, 4, 4, {node, "nil"}, {node, "nil"}}},
-    %             {node, 6, 6, {node, "nil"}, {node, "nil"}}},
-    %         {node, "nil"}},
-    %     T1
-    % ).
+    case lists:keyfind(tree, 1, Config) of
+        {tree, Tree} ->
+            T1 = lab2:remove(3, Tree),
+            ?assertEqual(
+                {node, 10, 10,
+                    {node, 5, 5,
+                        {node, 2, 2, {node, 1, 1, {node, "nil"}, {node, "nil"}},
+                            {node, 4, 4, {node, "nil"}, {node, "nil"}}},
+                        {node, 6, 6, {node, "nil"}, {node, "nil"}}},
+                    {node, "nil"}},
+                T1
+            );
+        false ->
+            ?assertThrow(badmatch, "Incorrect matching")
+    end.
