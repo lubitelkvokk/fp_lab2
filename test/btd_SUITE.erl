@@ -2,9 +2,9 @@
 -include_lib("common_test/include/ct.hrl").
 -include_lib("eunit/include/eunit.hrl").
 -export([init_per_suite/1, end_per_suite/1]).
--export([all/0, btd_insert_test/1, btd_remove/1]).
+-export([all/0, btd_insert_test/1, btd_remove_test/1, find_key_test/1]).
 
-all() -> [btd_insert_test, btd_remove].
+all() -> [btd_insert_test, btd_remove_test, find_key_test].
 
 init_per_suite(Config) ->
     T1 = lab2:insert(10, 10, lab2:empty()),
@@ -39,7 +39,7 @@ btd_insert_test(_Config) ->
         T4
     ).
 
-btd_remove(Config) ->
+btd_remove_test(Config) ->
     case lists:keyfind(tree, 1, Config) of
         {tree, Tree} ->
             T1 = lab2:remove(3, Tree),
@@ -52,6 +52,16 @@ btd_remove(Config) ->
                     {node, "nil"}},
                 T1
             );
-        false ->
+        _ ->
+            ?assertThrow(badmatch, "Incorrect matching")
+    end.
+
+find_key_test(Config) ->
+    case lists:keyfind(tree, 1, Config) of
+        {tree, Tree} ->
+            ?assertEqual({ok, 5}, lab2:find(5, Tree)),
+            ?assertEqual({ok, 6}, lab2:find(6, Tree)),
+            ?assertEqual(undefined, lab2:find(11, Tree));
+        _ ->
             ?assertThrow(badmatch, "Incorrect matching")
     end.
