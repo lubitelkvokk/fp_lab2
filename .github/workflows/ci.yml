@@ -1,0 +1,30 @@
+name: Erlang CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Erlang
+      uses: erlef/setup-beam@v1
+      with:
+        otp-version: 24
+
+    - name: Setup rebar3
+      run: |
+        wget https://s3.amazonaws.com/rebar3/rebar3
+        chmod +x rebar3
+        sudo mv rebar3 /usr/local/bin/
+
+    - name: Run Dialyzer
+      run: rebar3 dialyzer
+
+    - name: Run Elvis
+      run: rebar3 elvis
+
