@@ -1,6 +1,10 @@
 -module(lab2).
 
--export([insert/3, empty/0, remove/2, find/2, find_max_depth/1, balance_tree/1, insert_and_balance/3]).
+-export([
+    insert/3, empty/0, remove/2, find/2, find_max_depth/1, balance_tree/1, insert_and_balance/3
+]).
+-export([tree_to_list/1, merge_lists/2, merge_trees/2]).
+-export([create_tree_from_list/1]).
 
 empty() -> {node, "nil"}.
 
@@ -72,8 +76,44 @@ balance_tree({node, Key, Value, LeftNode, RightNode}) ->
             {node, Key, Value, LeftNode, RightNode}
     end.
 
-
 insert_and_balance(Key, Value, Tree) ->
     T = insert(Key, Value, Tree),
     balance_tree(T).
 
+tree_to_list(Tree) ->
+    tree_to_list(Tree, []).
+
+tree_to_list({node, "nil"}, Acc) ->
+    Acc;
+tree_to_list({node, Key, Value, LeftNode, RightNode}, Acc) ->
+    tree_to_list(LeftNode, [{Key, Value} | tree_to_list(RightNode, Acc)]).
+
+merge_lists(List1, List2) ->
+    merge_lists(List1, List2, []).
+
+merge_lists([], [], Acc) -> lists:reverse(Acc);
+merge_lists([H1 | T1], [], Acc) -> merge_lists(T1, [], [H1 | Acc]);
+merge_lists([], [H2 | T2], Acc) -> merge_lists([], T2, [H2 | Acc]);
+merge_lists([{Key, Value1} | T1], [{Key, _} | T2], Acc) ->
+    merge_lists(T1, T2, [{Key, Value1} | Acc]);
+merge_lists([H1 | T1], [H2 | T2], Acc) ->
+    {Key1, _} = H1,
+    {Key2, _} = H2,
+    case Key2 > Key1 of
+        true -> merge_lists(T1, [H2 | T2], [H1 | Acc]);
+        false -> merge_lists([H1 | T1], T2, [H2 | Acc])
+    end.
+
+create_tree_from_list(List) ->
+    create_tree_from_list(List, empty()).
+
+create_tree_from_list([], Acc) -> Acc;
+create_tree_from_list([H | T], Acc) ->
+    {Key, Value} = H,
+    create_tree_from_list(T, insert_and_balance(Key, Value, Acc)).
+    
+merge_trees(Tree1, Tree2) ->
+    TL1 = tree_to_list(Tree1),
+    TL2 = tree_to_list(Tree2),
+    List = merge_lists(TL1, TL2),
+    create_tree_from_list(List).
