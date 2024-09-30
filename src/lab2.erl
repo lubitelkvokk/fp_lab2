@@ -1,6 +1,6 @@
 -module(lab2).
 
--export([insert/3, empty/0, remove/2, find/2, find_max_depth/1, balance_tree/1]).
+-export([insert/3, empty/0, remove/2, find/2, find_max_depth/1, balance_tree/1, insert_and_balance/3]).
 
 empty() -> {node, "nil"}.
 
@@ -71,3 +71,9 @@ balance_tree({node, Key, Value, LeftNode, RightNode}) ->
         _ ->
             {node, Key, Value, LeftNode, RightNode}
     end.
+
+
+insert_and_balance(Key, Value, Tree) ->
+    T = insert(Key, Value, Tree),
+    balance_tree(T).
+
