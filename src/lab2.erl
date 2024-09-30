@@ -4,7 +4,7 @@
     insert/3, empty/0, remove/2, find/2, find_max_depth/1, balance_tree/1, insert_and_balance/3
 ]).
 -export([tree_to_list/1, merge_lists/2, merge_trees/2]).
--export([create_tree_from_list/1]).
+-export([create_tree_from_list/1, is_equal_trees/2]).
 
 empty() -> {node, "nil"}.
 
@@ -22,6 +22,7 @@ insert(NewKey, NewValue, {node, Key, Value, LeftNode, RightNode}) when
 insert(Key, NewValue, {node, Key, _, LeftNode, RightNode}) ->
     {node, Key, NewValue, LeftNode, RightNode}.
 
+
 remove(_, {node, "nil"}) ->
     empty();
 remove(SearchKey, {node, Key, Value, LeftNode, RightNode}) when SearchKey < Key ->
@@ -36,6 +37,7 @@ remove(SearchKey, {node, SearchKey, _, LeftNode, RightNode}) ->
     {node, DKey, DValue, DRightNode, DLeftNode} = LeftNode,
     {node, DKey, DValue, remove(DKey, {node, DKey, DValue, DRightNode, DLeftNode}), RightNode}.
 
+
 find(_, {node, "nil"}) ->
     undefined;
 find(SearchKey, {node, Key, _, _, RightNode}) when
@@ -49,6 +51,7 @@ find(SearchKey, {node, Key, _, LeftNode, _}) when
 find(SearchKey, {node, SearchKey, Value, _, _}) ->
     {ok, Value}.
 
+
 find_max_depth(Tree) ->
     find_max_depth(Tree, 0).
 
@@ -58,6 +61,7 @@ find_max_depth({node, _, _, LeftNode, RightNode}, Depth) ->
     LeftDepth = find_max_depth(LeftNode, Depth + 1),
     RightDepth = find_max_depth(RightNode, Depth + 1),
     max(LeftDepth, RightDepth).
+
 
 balance_tree({node, "nil"}) ->
     empty();
@@ -76,9 +80,11 @@ balance_tree({node, Key, Value, LeftNode, RightNode}) ->
             {node, Key, Value, LeftNode, RightNode}
     end.
 
+
 insert_and_balance(Key, Value, Tree) ->
     T = insert(Key, Value, Tree),
     balance_tree(T).
+
 
 tree_to_list(Tree) ->
     tree_to_list(Tree, []).
@@ -117,3 +123,8 @@ merge_trees(Tree1, Tree2) ->
     TL2 = tree_to_list(Tree2),
     List = merge_lists(TL1, TL2),
     create_tree_from_list(List).
+
+is_equal_trees(Tree1, Tree2) ->
+    TL1 = tree_to_list(Tree1),
+    TL2 = tree_to_list(Tree2),
+    TL1 == TL2.
