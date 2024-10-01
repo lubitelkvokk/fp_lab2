@@ -1,14 +1,24 @@
 -module(lab2).
 
 -export([
-    insert/3, empty/0, remove/2, find/2, find_max_depth/1, balance_tree/1, insert_and_balance/3
+    insert/3, empty/0, remove/2, find/2, balance_tree/1, insert_and_balance/3
 ]).
--export([tree_to_list/1, merge_lists/2, merge_trees/2]).
--export([create_tree_from_list/1, is_equal_trees/2]).
+-export([merge_trees/2]).
+-export([is_equal_trees/2]).
 
-empty() -> {node, "nil"}.
 
-insert(Key, Value, {node, "nil"}) ->
+-type tree() :: {node, 'nil'} | {node, Key::integer(), Value::any(), Left::tree(), Right::tree()}.
+-spec insert(Key::integer(), Value::any(), Tree::tree()) -> Tree::tree().
+-spec remove(Key::integer(), Tree::tree()) -> Tree::tree().
+-spec find(Key::integer(), Tree::tree()) -> Value::any().
+-spec balance_tree(Tree::tree()) -> Tree::tree().
+-spec insert_and_balance(Key::integer(), Value::any(), Tree::tree()) -> Tree::tree().
+-spec merge_trees(Tree1::tree(), Tree2::tree()) -> Tree::tree().
+-spec is_equal_trees(Tree1::tree(), Tree2::tree()) -> boolean().
+
+empty() -> {node, 'nil'}.
+
+insert(Key, Value, {node, 'nil'}) ->
     {node, Key, Value, empty(), empty()};
 insert(NewKey, NewValue, {node, Key, Value, LeftNode, RightNode}) when
     NewKey < Key
@@ -18,19 +28,18 @@ insert(NewKey, NewValue, {node, Key, Value, LeftNode, RightNode}) when
     NewKey > Key
 ->
     {node, Key, Value, LeftNode, insert(NewKey, NewValue, RightNode)};
-% когда ключи совпадают - меняем только Value узла
 insert(Key, NewValue, {node, Key, _, LeftNode, RightNode}) ->
     {node, Key, NewValue, LeftNode, RightNode}.
 
 
-remove(_, {node, "nil"}) ->
+remove(_, {node, 'nil'}) ->
     empty();
 remove(SearchKey, {node, Key, Value, LeftNode, RightNode}) when SearchKey < Key ->
     {node, Key, Value, remove(SearchKey, LeftNode), RightNode};
 remove(SearchKey, {node, Key, Value, LeftNode, RightNode}) when SearchKey > Key ->
     {node, Key, Value, LeftNode, remove(SearchKey, RightNode)};
 remove(SearchKey, {node, SearchKey, _, LeftNode, RightNode}) when
-    LeftNode == {node, "nil"}
+    LeftNode == {node, 'nil'}
 ->
     RightNode;
 remove(SearchKey, {node, SearchKey, _, LeftNode, RightNode}) ->
@@ -38,7 +47,7 @@ remove(SearchKey, {node, SearchKey, _, LeftNode, RightNode}) ->
     {node, DKey, DValue, remove(DKey, {node, DKey, DValue, DRightNode, DLeftNode}), RightNode}.
 
 
-find(_, {node, "nil"}) ->
+find(_, {node, 'nil'}) ->
     undefined;
 find(SearchKey, {node, Key, _, _, RightNode}) when
     SearchKey > Key
@@ -55,7 +64,7 @@ find(SearchKey, {node, SearchKey, Value, _, _}) ->
 find_max_depth(Tree) ->
     find_max_depth(Tree, 0).
 
-find_max_depth({node, "nil"}, Depth) ->
+find_max_depth({node, 'nil'}, Depth) ->
     Depth;
 find_max_depth({node, _, _, LeftNode, RightNode}, Depth) ->
     LeftDepth = find_max_depth(LeftNode, Depth + 1),
@@ -63,7 +72,7 @@ find_max_depth({node, _, _, LeftNode, RightNode}, Depth) ->
     max(LeftDepth, RightDepth).
 
 
-balance_tree({node, "nil"}) ->
+balance_tree({node, 'nil'}) ->
     empty();
 balance_tree({node, Key, Value, LeftNode, RightNode}) ->
     Diff = find_max_depth(LeftNode) - find_max_depth(RightNode),
@@ -89,7 +98,7 @@ insert_and_balance(Key, Value, Tree) ->
 tree_to_list(Tree) ->
     tree_to_list(Tree, []).
 
-tree_to_list({node, "nil"}, Acc) ->
+tree_to_list({node, 'nil'}, Acc) ->
     Acc;
 tree_to_list({node, Key, Value, LeftNode, RightNode}, Acc) ->
     tree_to_list(LeftNode, [{Key, Value} | tree_to_list(RightNode, Acc)]).
