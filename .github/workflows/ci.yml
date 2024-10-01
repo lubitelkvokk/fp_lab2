@@ -24,10 +24,10 @@ jobs:
         
     - name: Run Dialyzer
       run: |
-        rebar3
-        # rebar3 install
-        # rebar3 compile
-        # dialyzer --check_plt --plt _build/default/rebar3_24.2.1_plt
+        rebar3 install
+        rebar3 compile
+        rebar3 dialyzer
+        dialyzer --check_plt --plt _build/default/rebar3_24.2.1_plt
 
 
 
