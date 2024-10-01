@@ -26,7 +26,9 @@ jobs:
       run: |
         rebar3 compile
         rebar3 dialyzer
-        dialyzer --check_plt --plt _build/default/rebar3_24.2.1_plt
+        dialyzer --check_plt --plt _build/default/rebar3_${OTP_VERSION}_plt
+      env:
+        OTP_VERSION: ${{ steps['Setup Erlang'].outputs.otp-version }}
 
 
 
