@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.319.1
+      uses: actions/checkout@v2
 
     - name: Setup Erlang
       uses: erlef/setup-beam@v1
@@ -26,6 +26,9 @@ jobs:
       run: |
         rebar3 dialyzer
         
+    - name: Run Common Test
+      run: |
+        rebar3 ct
 
 
 
