@@ -21,19 +21,19 @@ end_per_suite(_Config) ->
 
 btd_insert_test(_Config) ->
     T1 = lab2:insert_and_balance(10, 10, lab2:empty()),
-    ?assertEqual({node, 10, 10, {node, "nil"}, {node, "nil"}}, T1),
+    ?assertEqual({node, 10, 10, {node, 'nil'}, {node, 'nil'}}, T1),
     T2 = lab2:insert_and_balance(5, 5, T1),
-    ?assertEqual({node, 10, 10, {node, 5, 5, {node, "nil"}, {node, "nil"}}, {node, "nil"}}, T2),
+    ?assertEqual({node, 10, 10, {node, 5, 5, {node, 'nil'}, {node, 'nil'}}, {node, 'nil'}}, T2),
     T3 = lab2:insert_and_balance(6, 6, T2),
     ?assertEqual(
-        {node, 5, 5, {node, "nil"},
-            {node, 10, 10, {node, 6, 6, {node, "nil"}, {node, "nil"}}, {node, "nil"}}},
+        {node, 5, 5, {node, 'nil'},
+            {node, 10, 10, {node, 6, 6, {node, 'nil'}, {node, 'nil'}}, {node, 'nil'}}},
         T3
     ),
     T4 = lab2:insert_and_balance(3, 3, T3),
     ?assertEqual(
-        {node, 5, 5, {node, 3, 3, {node, "nil"}, {node, "nil"}},
-            {node, 10, 10, {node, 6, 6, {node, "nil"}, {node, "nil"}}, {node, "nil"}}},
+        {node, 5, 5, {node, 3, 3, {node, 'nil'}, {node, 'nil'}},
+            {node, 10, 10, {node, 6, 6, {node, 'nil'}, {node, 'nil'}}, {node, 'nil'}}},
         T4
     ).
 
@@ -43,9 +43,9 @@ btd_remove_test(Config) ->
             T1 = lab2:remove(3, Tree),
             ?assertEqual(
                 {node, 5, 5,
-                    {node, 2, 2, {node, 1, 1, {node, "nil"}, {node, "nil"}},
-                        {node, 4, 4, {node, "nil"}, {node, "nil"}}},
-                    {node, 10, 10, {node, 6, 6, {node, "nil"}, {node, "nil"}}, {node, "nil"}}},
+                    {node, 2, 2, {node, 1, 1, {node, 'nil'}, {node, 'nil'}},
+                        {node, 4, 4, {node, 'nil'}, {node, 'nil'}}},
+                    {node, 10, 10, {node, 6, 6, {node, 'nil'}, {node, 'nil'}}, {node, 'nil'}}},
                 T1
             );
         _ ->

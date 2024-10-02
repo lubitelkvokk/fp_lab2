@@ -3,8 +3,8 @@
 -export([
     insert/3, empty/0, remove/2, find/2, balance_tree/1, insert_and_balance/3
 ]).
--export([merge_trees/2]).
--export([is_equal_trees/2]).
+-export([merge_trees/2, is_equal_trees/2]).
+-export([create_tree_from_list/1]).
 
 
 -type tree() :: {node, 'nil'} | {node, Key::integer(), Value::any(), Left::tree(), Right::tree()}.
