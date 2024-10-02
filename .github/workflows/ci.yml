@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.308.0
+      uses: actions/checkout@v2.319.1
 
     - name: Setup Erlang
       uses: erlef/setup-beam@v1
