@@ -51,3 +51,19 @@ T9 = lab2:insert_and_balance(50, 50, T8).
 - Предыдущее левое поддерево узла © становится правым поддеревом для (D)
 
 ![alt text](resources/image2.png)
+
+
+Функции:
+
+- добавление и удаление элементов;
+- фильтрация;
+- отображение (map);
+- свертки (левая и правая);
+    ``` erl
+    create_tree_from_list_foldl(List) ->
+        lists:foldl(fun insert/2, empty(), List).
+    
+    create_tree_from_list_foldr(List) ->
+        lists:foldr(fun insert/2, empty(), List).
+    ```
+- структура должна быть моноидом.
