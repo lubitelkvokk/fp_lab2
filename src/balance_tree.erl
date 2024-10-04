@@ -1,7 +1,7 @@
 -module(balance_tree).
 -include("lab2.hrl").
 -import(lab2, [empty/0, insert/3]).
--export([balance_tree/1, insert_and_balance/3]).
+-export([insert_and_balance/3]).
 
 -spec balance_tree(Tree :: tree()) -> Tree :: tree().
 -spec insert_and_balance(Key :: integer(), Value :: any(), Tree :: tree()) -> Tree :: tree().
