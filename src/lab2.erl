@@ -1,7 +1,7 @@
 -module(lab2).
 -include("lab2.hrl").
 -export([
-    insert/3, empty/0, remove/2, find/2, filter_tree/1
+    insert/3, empty/0, remove/2, find/2, filter_tree/2
 ]).
 -export([merge_trees/2, is_equal_trees/2]).
 -export([filter/2]).
@@ -88,13 +88,15 @@ is_equal_trees(Tree1, Tree2) ->
 
 filter(Pred, L) -> lists:reverse(filter(Pred, L, [])).
 
-filter(_, [], Acc) -> Acc;
-    filter(Pred, [H | T], Acc) -> case  Pred(H) of
-    true -> filter(Pred, T, [H | Acc]);
-    false -> filter(Pred, T, Acc)
-end.
+filter(_, [], Acc) ->
+    Acc;
+filter(Pred, [H | T], Acc) ->
+    case Pred(H) of
+        true -> filter(Pred, T, [H | Acc]);
+        false -> filter(Pred, T, Acc)
+    end.
 
-filter_tree(Tree) ->
+filter_tree(Tree, Func) ->
     List = util:tree_to_list(Tree),
-    NewList = filter(fun({Key, _}) -> Key > 5 end, List),
+    NewList = filter(Func, List),
     util:create_tree_from_list(NewList).
