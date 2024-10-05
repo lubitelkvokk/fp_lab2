@@ -15,7 +15,7 @@
 -spec is_equal_trees(Tree1 :: tree(), Tree2 :: tree()) -> boolean().
 
 empty() -> {node, 'nil'}.
-
+ 
 insert(Key, Value, {node, 'nil'}) ->
     {node, Key, Value, empty(), empty()};
 insert(NewKey, NewValue, {node, Key, Value, LeftNode, RightNode}) when
