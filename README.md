@@ -57,17 +57,8 @@ T9 = balance_tree:insert_and_balance(50, 50, T8).
 
 - добавление и удаление элементов;
 - фильтрация;
-- отображение (map);
-- свертки (левая и правая);
-    ``` erl
-    create_tree_from_list_foldl(List) ->
-        lists:foldl(fun insert/2, empty(), List).
-    
-    create_tree_from_list_foldr(List) ->
-        lists:foldr(fun insert/2, empty(), List).
-    ```
-- структура должна быть моноидом.
 ```
+...
 18> T9 = balance_tree:insert_and_balance(50, 50, T8).
 {node,10,10,
       {node,7,7,
@@ -82,4 +73,35 @@ T9 = balance_tree:insert_and_balance(50, 50, T8).
                   {node,nil}}}}
 19>lab2:filter_tree(T9, fun ({Key, _}) -> Key > 20 end).  
 {node,50,50,{node,nil},{node,100,100,{node,nil},{node,nil}}}
+```
+- отображение (map);
+- свертки (левая и правая);
+``` erl
+create_tree_from_list_foldl(List) ->
+    lists:foldl(fun insert/2, empty(), List).
+
+create_tree_from_list_foldr(List) ->
+    lists:foldr(fun insert/2, empty(), List).
+```
+- структура должна быть моноидом.
+    Операцией над множеством будет merge деревьев.
+  1) Ассоциативность
+```
+6> T1.
+{node,5,5,{node,nil},{node,nil}}
+7> T2.
+{node,3,3,{node,nil},{node,nil}}
+9> T5 = lab2:insert(8, 8, T3).
+{node,9,9,{node,8,8,{node,nil},{node,nil}},{node,nil}}
+10> lab2:merge_trees(lab2:merge_trees(T1, T2), T5) == lab2:merge_trees(T1, lab2:merge_trees(T2, T5)).
+true
+```
+    2) Нейтральный элемент {node, 'nil'}
+```
+11> lab2:empty().
+{node,nil}
+12> lab2:merge_trees(lab2:empty(), T5).                                                              
+{node,8,8,{node,nil},{node,9,9,{node,nil},{node,nil}}}
+13> lab2:merge_trees(lab2:empty(), T5) == lab2:merge_trees(T5, lab2:empty()).
+true
 ```
