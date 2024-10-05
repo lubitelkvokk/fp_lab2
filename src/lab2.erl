@@ -1,10 +1,11 @@
 -module(lab2).
 -include("lab2.hrl").
 -export([
-    insert/3, empty/0, remove/2, find/2, filter_tree/2
+    insert/3, empty/0, remove/2, find/2, filter/2
 ]).
 -export([merge_trees/2, is_equal_trees/2]).
--export([filter/2]).
+-export([foldl_tree/3]).
+-export([map_tree/2]).
 -import(balance_tree, [balance_tree/1, insert_and_balance/3]).
 -import(util, [tree_to_list/1, create_tree_from_list/1]).
 
@@ -15,7 +16,7 @@
 -spec is_equal_trees(Tree1 :: tree(), Tree2 :: tree()) -> boolean().
 
 empty() -> {node, 'nil'}.
- 
+
 insert(Key, Value, {node, 'nil'}) ->
     {node, Key, Value, empty(), empty()};
 insert(NewKey, NewValue, {node, Key, Value, LeftNode, RightNode}) when
@@ -86,17 +87,34 @@ is_equal_trees(Tree1, Tree2) ->
     TL2 = tree_to_list(Tree2),
     TL1 == TL2.
 
-filter(Pred, L) -> lists:reverse(filter(Pred, L, [])).
+filter(Pred, L) -> filter(Pred, L, empty()).
 
-filter(_, [], Acc) ->
+filter(_, {node, 'nil'}, Acc) ->
     Acc;
-filter(Pred, [H | T], Acc) ->
-    case Pred(H) of
-        true -> filter(Pred, T, [H | Acc]);
-        false -> filter(Pred, T, Acc)
+filter(Pred, {node, Key, Value, LeftNode, RightNode}, Acc) ->
+    case Pred(Key) of
+        true ->
+            NewTree = balance_tree:insert_and_balance(Key, Value, Acc),
+            LeftSubTree = filter(Pred, LeftNode, NewTree),
+            filter(Pred, RightNode, LeftSubTree);
+        false ->
+            LeftSubTree = filter(Pred, LeftNode, Acc),
+            filter(Pred, RightNode, LeftSubTree)
     end.
 
-filter_tree(Tree, Func) ->
-    List = util:tree_to_list(Tree),
-    NewList = filter(Func, List),
-    util:create_tree_from_list(NewList).
+map_tree(Func, Tree) -> map_tree(Func, Tree, empty()).
+
+map_tree(_, {node, 'nil'}, Acc) ->
+    Acc;
+map_tree(Func, {node, Key, Value, LeftNode, RightNode}, Acc) ->
+    NewTree = balance_tree:insert_and_balance(Key, Func(Value), Acc),
+    LeftSubTree = map_tree(Func, LeftNode, NewTree),
+    map_tree(Func, RightNode, LeftSubTree).
+
+foldl_tree(_, {node, 'nil'}, Acc) ->
+    Acc;
+foldl_tree(Func, Node, Acc) ->
+    {node, _, _, LeftNode, RightNode} = Node,
+    NewAcc = Func(Node, Acc),
+    LeftAcc = foldl_tree(Func, LeftNode, NewAcc),
+    foldl_tree(Func, RightNode, LeftAcc).
