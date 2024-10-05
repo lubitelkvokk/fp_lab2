@@ -88,14 +88,7 @@ T9 = balance_tree:insert_and_balance(50, 50, T8).
 19>lab2:filter_tree(T9, fun ({Key, _}) -> Key > 20 end).  
 {node,50,50,{node,nil},{node,100,100,{node,nil},{node,nil}}}
 ```
-- свертки (левая и правая);
-``` erl
-create_tree_from_list_foldl(List) ->
-    lists:foldl(fun insert/2, empty(), List).
 
-create_tree_from_list_foldr(List) ->
-    lists:foldr(fun insert/2, empty(), List).
-```
 - структура должна быть моноидом.
     Операцией над множеством будет merge деревьев.
   1) Ассоциативность
