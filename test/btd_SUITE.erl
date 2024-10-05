@@ -2,9 +2,10 @@
 -include_lib("common_test/include/ct.hrl").
 -include_lib("eunit/include/eunit.hrl").
 -export([init_per_suite/1, end_per_suite/1]).
--export([all/0, btd_insert_test/1, btd_remove_test/1, find_key_test/1, btd_neutral_check/1, btd_check_associativity/1]).
+-export([all/0, btd_insert_test/1, btd_remove_test/1, find_key_test/1]).
 
-all() -> [btd_insert_test, btd_remove_test, find_key_test, btd_neutral_check, btd_check_associativity].
+-export([btd_check_associativity/1, btd_neutral_check/1]).
+all() -> [btd_check_associativity, btd_neutral_check, btd_insert_test, btd_remove_test, find_key_test].
 
 init_per_suite(Config) ->
     T1 = util:create_tree_from_list([{10, 10}, {5, 5}, {6, 6}, {3, 3}, {4, 4}, {2, 2}, {1, 1}]),
@@ -62,19 +63,48 @@ find_key_test(Config) ->
             ?assertThrow(badmatch, "Incorrect matching")
     end.
 
-btd_neutral_check(Config) ->
-    case lists:keyfind(tree1, 1, Config) of
-        {tree1, Tree} ->
-            ?assert(lab2:is_equal_trees(Tree, lab2:merge_trees(Tree, lab2:empty()))),
-            ?assert(lab2:is_equal_trees(Tree, lab2:merge_trees(lab2:empty(), Tree)));
-        _ ->
-            ?assertThrow(badmatch, "Incorrect matching")
-    end.
+btd_neutral_check(_) ->
+    btd_neutral_check_rec(100).
 
-btd_check_associativity(Config) ->
-    {tree1, Tree1} = lists:keyfind(tree1, 1, Config),
-    {tree2, Tree2} = lists:keyfind(tree2, 1, Config),
-    {tree3, Tree3} = lists:keyfind(tree3, 1, Config),
+btd_neutral_check_rec(0) ->
+    ok;
+btd_neutral_check_rec(N) ->
+    Tree = generate_random_tree(),
+    ?assert(lab2:is_equal_trees(Tree, lab2:merge_trees(Tree, lab2:empty()))),
+    ?assert(lab2:is_equal_trees(Tree, lab2:merge_trees(lab2:empty(), Tree))),
+    btd_neutral_check_rec(N - 1).
+
+% Тест на ассоциативность объединения деревьев
+btd_check_associativity(_) ->
+    btd_check_associativity_rec(100).
+
+btd_check_associativity_rec(0) ->
+    ok;
+btd_check_associativity_rec(Count) ->
+    Tree1 = generate_random_tree(),
+    Tree2 = generate_random_tree(),
+    Tree3 = generate_random_tree(),
+
     Result1 = lab2:merge_trees(lab2:merge_trees(Tree1, Tree2), Tree3),
     Result2 = lab2:merge_trees(Tree1, lab2:merge_trees(Tree2, Tree3)),
-    ?assert(lab2:is_equal_trees(Result1, Result2)).
+
+    ?assert(lab2:is_equal_trees(Result1, Result2)),
+    % Рекурсивный вызов для следующего теста
+    btd_check_associativity_rec(Count - 1).
+
+% Функция для генерации случайного дерева
+generate_random_tree() ->
+    RandomList = generate_random_list(),
+    util:create_tree_from_list(RandomList).
+
+% Функция для генерации случайного списка ключ-значение
+generate_random_list() ->
+    lists:map(fun(_) -> {rand:uniform(1000), random_value()} end, lists:seq(1, rand:uniform(20))).
+
+% Генерация случайного значения
+random_value() ->
+    case rand:uniform(3) of
+        1 -> rand:uniform(1000);
+        2 -> lists:seq(1, rand:uniform(10));
+        3 -> integer_to_list(rand:uniform(1000))
+    end.

@@ -118,3 +118,4 @@ foldl_tree(Func, Node, Acc) ->
     NewAcc = Func(Node, Acc),
     LeftAcc = foldl_tree(Func, LeftNode, NewAcc),
     foldl_tree(Func, RightNode, LeftAcc).
+
