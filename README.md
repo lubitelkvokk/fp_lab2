@@ -14,6 +14,9 @@ T4 = lab2:insert(3, 3, T3).
 T5 = lab2:insert(4, 4, T4).
 T6 = lab2:insert(2, 2, T5).
 T7 = lab2:insert(1, 1, T6).
+lab2:filter(fun (Key) -> Key > 4 end, T7).
+lab2:map_tree(fun (X) -> X * 5 end, T7).
+lab2:foldl_tree(fun ({node, Key, Value, _, _}, Acc) -> Acc + Value end, T7, 0).
 ```
 
 ```

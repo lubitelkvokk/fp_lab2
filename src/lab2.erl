@@ -4,7 +4,7 @@
     insert/3, empty/0, remove/2, find/2, filter/2
 ]).
 -export([merge_trees/2, is_equal_trees/2]).
--export([foldl_tree/3]).
+-export([foldl_tree/3, foldr_tree/3]).
 -export([map_tree/2]).
 -import(balance_tree, [balance_tree/1, insert_and_balance/3]).
 -import(util, [tree_to_list/1, create_tree_from_list/1]).
@@ -115,7 +115,14 @@ foldl_tree(_, {node, 'nil'}, Acc) ->
     Acc;
 foldl_tree(Func, Node, Acc) ->
     {node, _, _, LeftNode, RightNode} = Node,
-    NewAcc = Func(Node, Acc),
-    LeftAcc = foldl_tree(Func, LeftNode, NewAcc),
-    foldl_tree(Func, RightNode, LeftAcc).
+    LeftAcc = foldl_tree(Func, LeftNode, Acc),
+    NewAcc = Func(Node, LeftAcc),
+    foldl_tree(Func, RightNode, NewAcc).
 
+foldr_tree(_, {node, 'nil'}, Acc) ->
+    Acc;
+foldr_tree(Func, Node, Acc) ->
+    {node, _, _, LeftNode, RightNode} = Node,
+    RightAcc = foldr_tree(Func, RightNode, Acc),
+    NewAcc = Func(Node, RightAcc),
+    foldr_tree(Func, LeftNode, NewAcc).
